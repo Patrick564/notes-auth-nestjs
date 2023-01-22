@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TaskController } from './task/task.controller';
-import { TaskService } from './task/task.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TasksModule } from './task/task.module';
 
 @Module({
-  imports: [],
-  controllers: [TaskController],
-  providers: [TaskService],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: '12345',
+      database: 'notes',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
+    TasksModule,
+  ],
 })
 export class AppModule {}
