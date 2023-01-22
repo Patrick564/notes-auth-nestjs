@@ -1,3 +1,3 @@
 export class UpdateTaskDto {
-  content: string;
+  content?: string;
 }
