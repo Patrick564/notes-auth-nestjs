@@ -1,3 +1,3 @@
 export interface Task {
-  content: string;
+  content: string
 }

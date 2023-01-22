@@ -1,12 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity({ name: 'task' })
 export class Task {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column({ nullable: false })
-  content: string;
+  content: string
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date

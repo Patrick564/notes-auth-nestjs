@@ -1,3 +1,3 @@
 export class CreateTaskDto {
-  content: string;
+  content: string
 }

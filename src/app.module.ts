@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TasksModule } from './tasks/tasks.module';
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { TasksModule } from './tasks/tasks.module'
 
 @Module({
   imports: [
@@ -12,9 +12,9 @@ import { TasksModule } from './tasks/tasks.module';
       password: '12345',
       database: 'notes',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: true
     }),
-    TasksModule,
-  ],
+    TasksModule
+  ]
 })
 export class AppModule {}
