@@ -1,21 +1,20 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { ListAllEntities } from './dto/list-all-entities.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskService } from './task.service';
+import { TasksService } from './tasks.service';
 
-@Controller('task')
-export class TaskController {
-  constructor(private tasksService: TaskService) {}
+@Controller('tasks')
+export class TasksController {
+  constructor(private tasksService: TasksService) {}
 
-  @Get('/all')
-  async findAll(@Query() query: ListAllEntities) {
+  @Get('')
+  async findAll() {
     return this.tasksService.findAll();
   }
 
   @Post('/add')
-  async create(@Body() createTaskDto: CreateTaskDto) {
-    return ""
+  async create(@Body() newTask: CreateTaskDto) {
+    return this.tasksService.create(newTask);
   }
 
   @Get(':id')
