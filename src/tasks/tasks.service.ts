@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { User } from 'src/users/users.entity'
 import { Repository } from 'typeorm'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
@@ -8,24 +9,39 @@ import { Task } from './tasks.entity'
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectRepository(Task) private tasksRepository: Repository<Task>
+    @InjectRepository(Task) private tasksRepository: Repository<Task>,
+    @InjectRepository(User) private usersRepository: Repository<User>
   ) {}
 
-  create(task: CreateTaskDto) {
-    if (task.content === '') {
+  async create(userId: number, taskData: CreateTaskDto) {
+    if (taskData.content === '') {
       throw new Error('Empty task content')
     }
 
-    const newTask = this.tasksRepository.create(task)
-    return this.tasksRepository.save(newTask)
+    const task = this.tasksRepository.create(taskData)
+    const newTask = await this.tasksRepository.save(task)
+    const owner = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['tasks']
+    })
+
+    owner.tasks.push(task)
+    await this.usersRepository.save(owner)
+
+    return newTask
   }
 
-  findAll() {
-    return this.tasksRepository.find()
+  async findAll(userId: number) {
+    const owner = await this.usersRepository.findOneBy({ id: userId })
+
+    return this.tasksRepository.find({ where: { owner } })
   }
 
-  async findOne(id: number) {
-    const found = await this.tasksRepository.findOneBy({ id })
+  async findOne(userId: number, id: number) {
+    const owner = await this.usersRepository.findOneBy({ id: userId })
+    const found = await this.tasksRepository.findOne({
+      where: { owner, id }
+    })
 
     if (found === null) {
       throw new Error('Task not found')
@@ -34,15 +50,18 @@ export class TasksService {
     return found
   }
 
-  update(id: number, task: UpdateTaskDto) {
+  async update(userId: number, id: number, task: UpdateTaskDto) {
+    const owner = await this.usersRepository.findOneBy({ id: userId })
+
     if (task.content === '') {
       throw new Error('Empty task content')
     }
 
-    return this.tasksRepository.update(id, task)
+    return this.tasksRepository.update({ owner, id }, task)
   }
 
-  async remove(id: number): Promise<void> {
-    await this.tasksRepository.delete(id)
+  async remove(userId: number, id: number): Promise<void> {
+    const owner = await this.usersRepository.findOneBy({ id: userId })
+    await this.tasksRepository.delete({ owner, id })
   }
 }

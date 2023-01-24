@@ -19,43 +19,55 @@ import { TasksService } from './tasks.service'
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
-  @Get('')
-  async findAll(): Promise<Task[]> {
-    return this.tasksService.findAll()
+  @Get(':userId')
+  async findAll(
+    @Param('userId', ParseIntPipe) userId: number
+  ): Promise<Task[]> {
+    return this.tasksService.findAll(userId)
   }
 
-  @Post('/add')
-  async create(@Body() newTask: CreateTaskDto): Promise<Task> {
+  @Post(':userId/add')
+  async create(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() newTask: CreateTaskDto
+  ): Promise<Task> {
     try {
-      return this.tasksService.create(newTask)
+      return this.tasksService.create(userId, newTask)
     } catch (err) {
       throw new BadRequestException('Missing task content')
     }
   }
 
-  @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Task> {
+  @Get(':userId/:id')
+  async findOne(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Task> {
     try {
-      return await this.tasksService.findOne(id)
+      return await this.tasksService.findOne(userId, id)
     } catch (err) {
       throw new NotFoundException('Task not found')
     }
   }
 
-  @Patch(':id')
+  @Patch(':userId/:id')
   async update(
+    @Param('userId', ParseIntPipe) userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() task: UpdateTaskDto
   ) {
     try {
-      return this.tasksService.update(id, task)
+      return this.tasksService.update(userId, id, task)
     } catch (err) {
       throw new BadRequestException('Missing task content')
     }
   }
 
-  @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.tasksService.remove(id)
+  @Delete(':userId/:id')
+  async remove(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<void> {
+    return this.tasksService.remove(userId, id)
   }
 }
