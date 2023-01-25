@@ -13,7 +13,7 @@ export class TasksService {
     @InjectRepository(User) private usersRepository: Repository<User>
   ) {}
 
-  async create(userId: number, taskData: CreateTaskDto) {
+  async create(username: string, taskData: CreateTaskDto) {
     if (taskData.content === '') {
       throw new Error('Empty task content')
     }
@@ -21,7 +21,7 @@ export class TasksService {
     const task = this.tasksRepository.create(taskData)
     const newTask = await this.tasksRepository.save(task)
     const owner = await this.usersRepository.findOne({
-      where: { id: userId },
+      where: { username },
       relations: ['tasks']
     })
 
@@ -31,14 +31,14 @@ export class TasksService {
     return newTask
   }
 
-  async findAll(userId: number) {
-    const owner = await this.usersRepository.findOneBy({ id: userId })
+  async findAll(username: string) {
+    const owner = await this.usersRepository.findOneBy({ username })
 
     return this.tasksRepository.find({ where: { owner } })
   }
 
-  async findOne(userId: number, id: number) {
-    const owner = await this.usersRepository.findOneBy({ id: userId })
+  async findOne(username: string, id: number) {
+    const owner = await this.usersRepository.findOneBy({ username })
     const found = await this.tasksRepository.findOne({
       where: { owner, id }
     })
@@ -50,8 +50,8 @@ export class TasksService {
     return found
   }
 
-  async update(userId: number, id: number, task: UpdateTaskDto) {
-    const owner = await this.usersRepository.findOneBy({ id: userId })
+  async update(username: string, id: number, task: UpdateTaskDto) {
+    const owner = await this.usersRepository.findOneBy({ username })
 
     if (task.content === '') {
       throw new Error('Empty task content')
@@ -60,8 +60,8 @@ export class TasksService {
     return this.tasksRepository.update({ owner, id }, task)
   }
 
-  async remove(userId: number, id: number): Promise<void> {
-    const owner = await this.usersRepository.findOneBy({ id: userId })
+  async remove(username: string, id: number): Promise<void> {
+    const owner = await this.usersRepository.findOneBy({ username })
     await this.tasksRepository.delete({ owner, id })
   }
 }

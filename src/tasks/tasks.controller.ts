@@ -19,55 +19,53 @@ import { TasksService } from './tasks.service'
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
-  @Get(':userId')
-  async findAll(
-    @Param('userId', ParseIntPipe) userId: number
-  ): Promise<Task[]> {
-    return this.tasksService.findAll(userId)
+  @Get(':username')
+  async findAll(@Param('username') username: string): Promise<Task[]> {
+    return this.tasksService.findAll(username)
   }
 
-  @Post(':userId/add')
+  @Post(':username/add')
   async create(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('username') username: string,
     @Body() newTask: CreateTaskDto
   ): Promise<Task> {
     try {
-      return this.tasksService.create(userId, newTask)
+      return this.tasksService.create(username, newTask)
     } catch (err) {
       throw new BadRequestException('Missing task content')
     }
   }
 
-  @Get(':userId/:id')
+  @Get(':username/:id')
   async findOne(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('username') username: string,
     @Param('id', ParseIntPipe) id: number
   ): Promise<Task> {
     try {
-      return await this.tasksService.findOne(userId, id)
+      return await this.tasksService.findOne(username, id)
     } catch (err) {
       throw new NotFoundException('Task not found')
     }
   }
 
-  @Patch(':userId/:id')
+  @Patch(':username/:id')
   async update(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('username') username: string,
     @Param('id', ParseIntPipe) id: number,
     @Body() task: UpdateTaskDto
   ) {
     try {
-      return this.tasksService.update(userId, id, task)
+      return this.tasksService.update(username, id, task)
     } catch (err) {
       throw new BadRequestException('Missing task content')
     }
   }
 
-  @Delete(':userId/:id')
+  @Delete(':username/:id')
   async remove(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('username') username: string,
     @Param('id', ParseIntPipe) id: number
   ): Promise<void> {
-    return this.tasksService.remove(userId, id)
+    return this.tasksService.remove(username, id)
   }
 }

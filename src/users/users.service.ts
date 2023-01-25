@@ -12,15 +12,23 @@ export class UsersService {
   ) {}
 
   create(user: CreateUserDto) {
+    if (user.username === '') {
+      const [address] = user.email.split('@')
+      user.username = `@${address}`
+    } else {
+      user.username = `@${user.username}`
+    }
+
     const newUser = this.usersRepository.create(user)
     return this.usersRepository.save(newUser)
   }
 
-  findOne(id: number) {
-    return this.usersRepository.findOneBy({ id })
+  findOne(username: string) {
+    return this.usersRepository.findOneBy({ username })
   }
 
-  update(id: number, user: UpdateUserDto) {
-    return this.usersRepository.update(id, user)
+  update(username: string, user: UpdateUserDto) {
+    user.username = `@${user.username}`
+    return this.usersRepository.update({ username }, user)
   }
 }
