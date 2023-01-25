@@ -12,14 +12,14 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard'
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      // url: process.env.DATABASE_URL,
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '12345',
-      database: 'notes',
+      url: process.env.DATABASE_URL,
+      // host: 'localhost',
+      // port: 3306,
+      // username: 'root',
+      // password: '12345',
+      // database: 'notes',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true
+      synchronize: false
     }),
     TasksModule,
     UsersModule,
