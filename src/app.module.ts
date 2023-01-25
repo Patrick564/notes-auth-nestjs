@@ -13,7 +13,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard'
     TypeOrmModule.forRoot({
       type: 'mysql',
       url: process.env.DATABASE_URL,
-      ssl: true,
+      // ssl: true,
       // host: 'localhost',
       // port: 3306,
       // username: 'root',
