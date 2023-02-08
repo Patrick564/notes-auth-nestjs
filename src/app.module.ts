@@ -20,7 +20,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard'
       // password: '12345',
       // database: 'notes',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true
+      synchronize: false
     }),
     TasksModule,
     UsersModule,
